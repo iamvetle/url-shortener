@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div id="page-wrapper">
 		<p>Add your url to shorten it</p>
 		<input v-model="inputText" />
 		<button @click="createShortLink()">Create Link</button>
@@ -11,55 +11,35 @@
 	const supabase = useSupabaseClient();
 	const host = "localhost:3000";
 
-			const corsHeaders = {
+	const corsHeaders = {
 			"Access-Control-Allow-Origin": "*",
 			"Access-Control-Allow-Headers":
 				"authorization, x-client-info, apikey, content-type",
 			"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 		};
 
-	async function getLongURL(shortLink: string) {
-		const { data, error } = (await supabase
-			.from("shortens")
-			.select("long_url")
-			.eq("short_url", shortLink)
-			.single()) as {
-			data: { long_url: string } | null;
-			error: any;
-		};
+	async function getLongURL(shortLink:string) {
+			const { data, error } = await supabase.functions.invoke(
+			"getLongURL",
+			{
+				method: "POST",
+				...corsHeaders,
+				body: {
+					short_url: shortLink
+				},
+			}
+		);	
 
 		if (error) {
-			console.error(error);
-			return null;
+			console.error(error)
 		}
 
-		if (data?.long_url) {
-			return data.long_url;
+		if (data) {
+			console.log("data", data)
+			return data.data.long_url
 		}
 
-		return null;
-
-	// 	const { data, error } = await supabase.functions.invoke(
-	// 		"generateShortLink",
-	// 		{
-	// 			method: "POST",
-	// 			...corsHeaders,
-	// 			body: {
-	// 				short_url: shortLink
-	// 			},
-	// 		}
-	// 	);	
-
-	// 	if (error) {
-	// 		console.error(error)
-	// 	}
-
-	// 	if (data) {
-	// 		data.long_url
-	// 	}
-
-	// 	return null
-
+		return null
 	}
 
 	const route = useRoute();
@@ -122,3 +102,10 @@
 		}
 	}
 </script>
+
+<style scoped>
+	/* #page-wrapper {
+		background-color: hsl(0, 0, 0) 
+	} */
+
+</style>
