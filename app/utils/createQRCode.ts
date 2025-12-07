@@ -6,7 +6,7 @@ import qrcode from "qrcode-generator"
 */
 export default function (element: Element, url:string) {
     const qr = qrcode(4, "M")
-    qr.addData(url)
+    qr.addData(url);    
     qr.make();
     element.innerHTML = qr.createImgTag(12);
 }

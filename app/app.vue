@@ -1,41 +1,17 @@
 <template>
 	<div id="page-wrapper">
-		<div id="create-short-url-container">
-			<div id="long-url-container">
-				<label for="input-text-long-url">Long URL</label>
-				<input
-					id="input-text-long-url"
-					type="text"
-					v-model="inputTextLongURL"
-				/>
+		<h1>Shorten your long URL</h1>
+		<div id="shortener-or-qrcode-box">
+			<div id="tops">
+				<button id="shorten-url-top">Shorten a link</button>
+				<button id="create-qr-code-top">Create a QR code</button>
 			</div>
-
-			<div id="custom-url-container">
-				<div>
-					<p>Domain</p>
-					<p>localhost:3000</p>
-				</div>
-				<p>/</p>
-				<div>
-					<label for="input-text-custom-short-url">Custom URL (optional)</label>
-					<input id="input-text-custom-short-url" type="text" v-model="inputTextCustomURL" />
-				</div>
-			</div>
-			<button @click="createShortLink(host, corsHeaders)">
-				Create Link
-			</button>
-
-			<p v-if="newShortURL">{{ newShortURL }}</p>
-		</div>
-
-		<div id="qrcode-placeholder">
+			<ShortenURL />
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-	const host = "localhost:3000";
-
 	const corsHeaders = {
 		"Access-Control-Allow-Origin": "*",
 		"Access-Control-Allow-Headers":
@@ -56,50 +32,47 @@
 			});
 		}
 	}
-
-	const inputTextLongURL = useState("inputTextLongURL", () => "");
-	const inputTextCustomURL = useState("inputTextCustomURL", () => "");
-	const newShortURL = useState("newShortURL", () => "");
 </script>
 
 <style scoped>
-	#long-url-container {
+	#page-wrapper {
+		background-color: var(--bg-color);
+		height: 100vh;
 		display: flex;
 		flex-direction: column;
-		gap: 4px;
+		align-items: center;
+		justify-content: center;
 	}
 
-	#create-short-url-container {
-		width: 450px;
-		margin-right: auto;
+	h1 {
+		font-size: 36px;
+		text-align: center;
+	}
+
+	#shortener-or-qrcode-box {
+		margin-top: 32px;
+	}
+
+	#shorten-url-top, #create-qr-code-top {
+		width:50%;
+		display: inline-block;
+		padding-top: 16px;
+		padding-bottom: 16px;
+		text-align: center;
+		border-radius: 5px 5px 0 0;
+	}
+
+	#shorten-url-top {
+		background-color: var(--bg-color-2);
+	}
+
+	#create-qr-code-top {
+		background-color: var(--bg-color-1-5);
+	}
+
+	#tops {
+		width: 486px;
 		margin-left: auto;
-	}
-
-	#custom-url-container {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-	}
-
-	#custom-url-container div {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-
-	#custom-url-container p {
-		align-self: flex-end;
-	}
-
-	#custom-url-container div p {
-		align-self: flex-start;
-	}
-
-	#input-text-long-url {
-		width: 100%;
-	}
-
-	button {
-		width: 100%;
+		margin-right: auto;
 	}
 </style>
