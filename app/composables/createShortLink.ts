@@ -35,7 +35,7 @@ export default async function (host: string, headers: object) {
 		long_url: longURL,
 	};
 
-	if (inputTextCustomURL.value.trim().length > 3) {
+	if (inputTextCustomURL.value.trim().length > 2) {
 		body.custom_url = inputTextCustomURL.value.trim();
 	} else {
 		inputTextCustomURL.value = ""

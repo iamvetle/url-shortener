@@ -3,13 +3,16 @@
 		<div id="long-url-container">
 			<label for="input-text-long-url" class="mute">Long URL</label>
 			<input
+				:readonly="Boolean(newShortURL)"
+				minlength="4"
 				id="input-text-long-url"
 				type="text"
 				v-model="inputTextLongURL"
+				@keyup.enter="Boolean(!newShortURL) ? createShortLink(host, corsHeaders) : resetShortInputs()"
 			/>
 		</div>
 
-		<div id="custom-url-container">
+		<div id="custom-url-container" v-if="!newShortURL">
 			<div id="input-custom-url-label-group">
 				<p class="mute">Domain</p>
 				<label for="input-text-custom-short-url" class="mute"
@@ -17,26 +20,42 @@
 				>
 			</div>
 
-			<div id="input-custom-url-group">
-				<p>localhost:3000</p>
+			<div id="input-custom-url-group" v-if="!newShortURL">
+				<p>{{ host }}</p>
 				<p>/</p>
 				<div>
 					<input
+					@keyup.enter="createShortLink(host, corsHeaders)"
 						id="input-text-custom-short-url"
 						type="text"
 						v-model="inputTextCustomURL"
+						minlength="3"
 					/>
 				</div>
 			</div>
 		</div>
-		<button @click="createShortLink(host, corsHeaders)">Create Link</button>
 
-		<p v-if="newShortURL">{{ newShortURL }}</p>
+		<div v-if="newShortURL">
+			<p id="new-short-url-p">New short URL:</p>
+			<input id="new-short-url-input" type="text" readonly v-model="newShortURL" />
+		</div>
+
+		<button v-if="!newShortURL" @click="createShortLink(host, corsHeaders)">
+			Create Link
+		</button>
+
+		<button v-if="newShortURL" @click="resetShortInputs()" @keyup.enter="resetShortInputs()">
+			Create another short link
+		</button>
 	</div>
 </template>
 
 <script setup lang="ts">
-	const host = "localhost:3000";
+	const host = ref("localhost:3000");
+
+	onMounted(() => {
+		host.value = window.location.host
+	})
 
 	const corsHeaders = {
 		"Access-Control-Allow-Origin": "*",
@@ -48,6 +67,12 @@
 	const inputTextLongURL = useState("inputTextLongURL", () => "");
 	const inputTextCustomURL = useState("inputTextCustomURL", () => "");
 	const newShortURL = useState("newShortURL", () => "");
+
+	const resetShortInputs = () => {
+		newShortURL.value = "";
+		inputTextLongURL.value = "";
+		inputTextCustomURL.value = "";
+	}
 </script>
 
 <style scoped>
@@ -67,7 +92,6 @@
 		background-color: var(--bg-color-3);
 		border: none;
 		border-radius: 5px;
-
 	}
 
 	#long-url-container {
@@ -120,5 +144,12 @@
 		padding-bottom: 12px;
 	}
 
+	#new-short-url-p {
+		margin-top: 32px;
+		color: var(--bg-color-muted)
+	}
 
+	#new-short-url-input {
+		width:100%;
+	}
 </style>
