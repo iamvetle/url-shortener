@@ -27,6 +27,9 @@
 
 			<p v-if="newShortURL">{{ newShortURL }}</p>
 		</div>
+
+		<div id="qrcode-placeholder">
+		</div>
 	</div>
 </template>
 
