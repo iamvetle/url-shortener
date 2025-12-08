@@ -19,20 +19,18 @@
 				</button>
 			</div>
 					
-			<ShortenURL :corsHeaders="corsHeaders" v-if="showShortenURL"  />
-			<CreateQRCode :corsHeaders="corsHeaders" v-if="!showShortenURL" />
+			<ShortenURL :host="host || ''" :corsHeaders="corsHeaders" v-if="showShortenURL"  />
+			<CreateQRCode :host="host || ''" :corsHeaders="corsHeaders" v-if="!showShortenURL" />
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import  ShortenURL from '~/components/ShortenURL.vue';
-
-	type ShortenURLType = InstanceType<typeof ShortenURL>
-
 	const showShortenURL = ref(true);
-
-	const shortenTopRef = useTemplateRef<ShortenURLType>("shorten-top-ref");
+	const host:Ref<null | string> = ref(null)
+	onMounted(() => {
+		host.value = window.location.hostname
+	})
 
 	const corsHeaders = {
 		"Access-Control-Allow-Origin": "*",
