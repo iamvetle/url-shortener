@@ -1,29 +1,36 @@
-/* Return NULL if the short link is not valid, and a regulated string if it is valid */
-function regulateShortLink(shortLink: string) {
-	let newShortlink = shortLink;
+/* Return NULL if the long url is not valid, and a regulated string if it is valid */
+function regulateLongURL(LongURL: string) {
+	let newLongURL = LongURL;
 
-	if (newShortlink.length < 1 && !newShortlink.includes(".")) {
+	if (newLongURL.length < 1 || !newLongURL.includes(".")) {
 		return null;
 	}
 
-	if (!newShortlink.includes("http") || !newShortlink.includes("https")) {
-		newShortlink = `https://${newShortlink}`;
+	if (!newLongURL.includes("http") || !newLongURL.includes("https")) {
+		newLongURL = `https://${newLongURL}`;
 	}
 
-	return newShortlink;
+	return newLongURL;
 }
 
-export default async function (host: string, headers: object) {
+/**
+ * 
+ * @param host The hostname
+ * @param headers Headers to use when invoking the edge function
+ * @returns Returns null if there is an error and the short link link if everything went ok
+ */
+
+export default async function (host: string, headers: object):Promise<string | null> {
 	const supabase = useSupabaseClient();
 
 	const inputTextCustomURL = useState("inputTextCustomURL", () => "");
 	const inputTextLongURL = useState("inputTextLongURL", () => "");
 	const newShortURL = useState("newShortURL", () => "");
 
-	const longURL = regulateShortLink(inputTextLongURL.value);
+	const longURL = regulateLongURL(inputTextLongURL.value);
 
 	if (!longURL) {
-		return;
+		return null;
 	}
 
 	interface Body {
@@ -35,10 +42,15 @@ export default async function (host: string, headers: object) {
 		long_url: longURL,
 	};
 
+	/* The custom url is above the legal limit*/
 	if (inputTextCustomURL.value.trim().length > 2) {
 		body.custom_url = inputTextCustomURL.value.trim();
-	} else {
-		inputTextCustomURL.value = ""
+	} 
+	
+	/* The custom url is under the limit  */
+	if (inputTextCustomURL.value.trim().length <= 2 && inputTextCustomURL.value.trim().length > 0) {
+		console.log("The custom name for the URL has too few leters.")
+		return null
 	}
 
 	const { data, error } = await supabase.functions.invoke(
@@ -52,9 +64,13 @@ export default async function (host: string, headers: object) {
 
 	if (data) {
 		newShortURL.value = `${host}/${data.short_url}`;
+		return newShortURL.value
 	}
 
 	if (error) {
 		console.error(error);
+		return null
 	}
+
+	return null
 }

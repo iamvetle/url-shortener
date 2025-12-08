@@ -51,18 +51,17 @@
 </template>
 
 <script setup lang="ts">
-	const host = ref("localhost:3000");
+	defineProps({
+		host: {
+			type:String,
+			default: "localhost:3000"
+		},
 
-	onMounted(() => {
-		host.value = window.location.host
+		corsHeaders: {
+			type: Object,
+			required: true
+		}
 	})
-
-	const corsHeaders = {
-		"Access-Control-Allow-Origin": "*",
-		"Access-Control-Allow-Headers":
-			"authorization, x-client-info, apikey, content-type",
-		"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-	};
 
 	const inputTextLongURL = useState("inputTextLongURL", () => "");
 	const inputTextCustomURL = useState("inputTextCustomURL", () => "");
@@ -73,6 +72,7 @@
 		inputTextLongURL.value = "";
 		inputTextCustomURL.value = "";
 	}
+
 </script>
 
 <style scoped>
