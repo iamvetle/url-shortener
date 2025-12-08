@@ -104,17 +104,24 @@
 		align-items: center;
 		justify-content: center;
 		width:100%;
+				padding-left: 8px;
+		padding-right: 8px;
 	}
 
 	#shortener-or-qrcode-box {
 		width:100%;
-		padding-left: 8px;
-		padding-right: 8px;
 	}
 
 	h1 {
 		font-size: 36px;
 		text-align: center;
+	}
+
+	@media (max-width: 400px) {
+		h1 {
+		font-size: 32px;
+		}
+
 	}
 
 	#shortener-or-qrcode-box {

@@ -23,16 +23,15 @@
 
 		<div id="custom-url-container" v-if="!newShortURL">
 			<div id="input-custom-url-label-group">
-				<p class="mute">Domain</p>
+				<p class="mute domain-thing">Domain</p>
 				<label for="input-text-custom-short-url" class="mute"
 					>Custom URL (optional)</label
 				>
 			</div>
 
 			<div id="input-custom-url-group" v-if="!newShortURL">
-				<p>{{ host }}</p>
-				<p>/</p>
-				<div>
+				<p class="domain-thing"> {{ host }}</p>
+				<p class="domain-thing">/</p>
 					<input
 						@keyup.enter="
 							createQRCodeAndLink(
@@ -47,7 +46,6 @@
 						v-model="inputTextCustomURL"
 						minlength="3"
 					/>
-				</div>
 			</div>
 		</div>
 
@@ -64,8 +62,8 @@
 		<div id="qr-code-and-download">
 			<div id="qr-code-placeholder"></div>
 
-			<div v-if="readyForDownload" id="download-group">
-				<h2>Download your QRcode now</h2>
+			<div v-show="readyForDownload" id="download-group">
+				<h2>Download your QR code</h2>
 				<a id="downloadQRLink">Download GIF here</a>
 			</div>
 		</div>
@@ -170,6 +168,13 @@
 		border-radius: 0 0 5px 5px;
 	}
 
+		@media (max-width: 470px){
+		#create-qr-code-container{
+			padding-right: 24px;
+			padding-left: 24px;
+		}		
+	}
+
 	#input-custom-url-label-group {
 		margin-top: 32px;
 		display: flex;
@@ -239,6 +244,20 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
+	}
+
+		@media (max-width: 470px) {
+		.domain-thing {
+			display: none;
+		}
+
+		#input-custom-url-label-group label {
+			transform: translate(0);
+		}
+
+		#input-text-custom-short-url {
+			width: 100%;
+		}
 	}
 </style>
 
