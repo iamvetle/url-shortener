@@ -2,8 +2,14 @@
 function regulateLongURL(LongURL: string) {
 	let newLongURL = LongURL;
 
-	if (newLongURL.length < 1 || !newLongURL.includes(".")) {
+	if (newLongURL.length < 1 ){
+		console.log("The long url is too short.")
 		return null;
+	}
+
+	if (!checkIfIsTLD(newLongURL.toUpperCase())) {
+		console.log("The url doesn't contain a top level domain.")
+		return null
 	}
 
 	if (!newLongURL.includes("http") || !newLongURL.includes("https")) {
