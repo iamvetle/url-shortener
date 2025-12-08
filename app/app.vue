@@ -103,6 +103,13 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		width:100%;
+	}
+
+	#shortener-or-qrcode-box {
+		width:100%;
+		padding-left: 8px;
+		padding-right: 8px;
 	}
 
 	h1 {
@@ -133,7 +140,8 @@
 	}
 
 	#tops {
-		width: 486px;
+		max-width: 486px;
+		width: 100%;
 		margin-left: auto;
 		margin-right: auto;
 	}

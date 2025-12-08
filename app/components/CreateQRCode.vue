@@ -158,7 +158,8 @@
 	}
 
 	#create-qr-code-container {
-		width: 486px;
+		max-width: 486px;
+		width: 100%;
 		margin-right: auto;
 		margin-left: auto;
 		background-color: var(--bg-color-2);
