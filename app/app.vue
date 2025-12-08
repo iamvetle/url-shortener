@@ -56,11 +56,14 @@
 	const inputTextLongURL = useState("inputTextLongURL", () => "");
 	const inputTextCustomURL = useState("inputTextCustomURL", () => "");
 	const newShortURL = useState("newShortURL", () => "");
+	const readyForDownload = useState("readyForDownload", () => false);
 
 	const resetShortInputs = () => {
 		newShortURL.value = "";
 		inputTextLongURL.value = "";
 		inputTextCustomURL.value = "";
+		readyForDownload.value = false;
+
 	}
 
 	function shortenURLTopClicked() {

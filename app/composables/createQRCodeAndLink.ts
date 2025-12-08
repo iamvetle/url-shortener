@@ -15,6 +15,8 @@ export default async function (
 ): Promise<void> {
 	const newLink = await createShortLink(hostname, headers);
 	const newShortURL = useState("newShortURL", () => "");
+	const readyForDownload = useState("readyForDownload", () => false);
+
 
 	if (newLink) {
 		const base64URL = createQRCode(newShortURL.value);
@@ -33,8 +35,11 @@ export default async function (
 
 			linkElement.href = base64URL;
 			linkElement.download = "qrcode.gif"
+
+			readyForDownload.value = true			
 		}
 	} else {
+		readyForDownload.value = false
 		console.error(
 			"There was something wrong with creating the new short url, and not QR code was created."
 		);

@@ -64,7 +64,7 @@
 		<div id="qr-code-and-download">
 			<div id="qr-code-placeholder"></div>
 
-			<div v-if="newShortURL" id="download-group">
+			<div v-if="readyForDownload" id="download-group">
 				<h2>Download your QRcode now</h2>
 				<a id="downloadQRLink">Download GIF here</a>
 			</div>
@@ -113,6 +113,8 @@
 
 	const createQRCodePlaceholderElement: Ref<null | Element> = ref(null);
 	const downloadQrLink = ref("downloadQRLink");
+
+	const readyForDownload = useState("readyForDownload", () => false);
 
 	onMounted(() => {
 		createQRCodePlaceholderElement.value = document.getElementById(
