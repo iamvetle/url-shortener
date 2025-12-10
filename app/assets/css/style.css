@@ -8,6 +8,15 @@
     --bg-color-muted: hsl(0, 0%, 70%);
 }
 
+[data-theme="light"] {
+    --bg-color: hsl(0, 0%, 85%);
+    --bg-color-1-5: hsl(0, 0%, 90%);
+    --bg-color-2: hsl(0, 0%, 95%);
+    --bg-color-3: hsl(0, 0%, 100%);
+
+    --bg-color-text: hsl(0, 0%, 5%);
+    --bg-color-muted: hsl(0, 0%, 30%);} 
+
 @font-face {
 	font-family: "Inter";
 	src: url(/Inter/Inter-VariableFont_opsz,wght.ttf) format("truetype");
