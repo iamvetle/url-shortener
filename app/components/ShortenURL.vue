@@ -8,11 +8,7 @@
 				id="input-text-long-url"
 				type="text"
 				v-model="inputTextLongURL"
-				@keyup.enter="
-					Boolean(!newShortURL)
-						? createShortLink(host, corsHeaders)
-						: resetShortInputs()
-				"
+				@keyup.enter="genLink()"
 			/>
 		</div>
 
@@ -29,7 +25,7 @@
 				<p class="domain-thing">/</p>
 
 				<input
-					@keyup.enter="createShortLink(host, corsHeaders)"
+					@keyup.enter="genLink()"
 					id="input-text-custom-short-url"
 					type="text"
 					v-model="inputTextCustomURL"
@@ -63,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-	defineProps({
+	const props = defineProps({
 		host: {
 			type: String,
 			default: "localhost:3000",
@@ -79,10 +75,30 @@
 	const inputTextCustomURL = useState("inputTextCustomURL", () => "");
 	const newShortURL = useState("newShortURL", () => "");
 
+	const svgURL = useState("svgURL", () => "");
+	const pngURL = useState("pngURL", () => "");
+	const readyForDownload = useState("readyForDownload", () => false);
+
+	async function genLink() {
+		if (!newShortURL.value) {
+			createShortLink(props.host, props.corsHeaders);
+		}
+	}
+
 	const resetShortInputs = () => {
 		newShortURL.value = "";
 		inputTextLongURL.value = "";
 		inputTextCustomURL.value = "";
+		readyForDownload.value = false;
+
+
+		if (svgURL.value.length > 0) {
+			URL.revokeObjectURL(svgURL.value);
+		}
+
+		if (pngURL.value.length > 0) {
+			URL.revokeObjectURL(pngURL.value);
+		}
 	};
 </script>
 
@@ -124,11 +140,11 @@
 		border-radius: 0 0 5px 5px;
 	}
 
-	@media (max-width: 470px){
-		#create-short-url-container{
+	@media (max-width: 470px) {
+		#create-short-url-container {
 			padding-right: 24px;
 			padding-left: 24px;
-		}		
+		}
 	}
 
 	#input-custom-url-label-group {

@@ -8,16 +8,7 @@
 				id="input-text-long-url"
 				type="text"
 				v-model="inputTextLongURL"
-				@keyup.enter="
-					Boolean(!newShortURL)
-						? createQRCodeAndLink(
-								createQRCodePlaceholderElement as Element,
-								host,
-								corsHeaders,
-								downloadQrLink
-						  )
-						: resetShortInputs()
-				"
+				@keyup.enter="genQR()"
 			/>
 		</div>
 
@@ -30,22 +21,15 @@
 			</div>
 
 			<div id="input-custom-url-group" v-if="!newShortURL">
-				<p class="domain-thing"> {{ host }}</p>
+				<p class="domain-thing">{{ host }}</p>
 				<p class="domain-thing">/</p>
-					<input
-						@keyup.enter="
-							createQRCodeAndLink(
-								createQRCodePlaceholderElement as Element,
-								host,
-								corsHeaders,
-								downloadQrLink
-							)
-						"
-						id="input-text-custom-short-url"
-						type="text"
-						v-model="inputTextCustomURL"
-						minlength="3"
-					/>
+				<input
+					@keyup.enter="genQR()"
+					id="input-text-custom-short-url"
+					type="text"
+					v-model="inputTextCustomURL"
+					minlength="3"
+				/>
 			</div>
 		</div>
 
@@ -64,19 +48,20 @@
 
 			<div v-show="readyForDownload" id="download-group">
 				<h2>Download your QR code</h2>
-				<a id="downloadQRLink">Download PNG here</a>
+				<a id="downloadQRLinkPNG">Download PNG here</a>
+				<a id="downloadQRLinkSVG">Download SVG here</a>
 			</div>
 		</div>
 
 		<button
 			v-if="!newShortURL"
 			@click="
-				createQRCodeAndLink(
-					createQRCodePlaceholderElement as Element,
-					host,
-					corsHeaders,
-					downloadQrLink
-				)
+				!waiting
+					? createQRCodeAndLink(
+							createQRCodePlaceholderElement as Element,
+							host,
+							corsHeaders
+					  ) : null
 			"
 		>
 			Create QR code
@@ -93,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-	defineProps({
+	const props = defineProps({
 		host: {
 			type: String,
 			default: "localhost:3000",
@@ -110,9 +95,19 @@
 	const newShortURL = useState("newShortURL", () => "");
 
 	const createQRCodePlaceholderElement: Ref<null | Element> = ref(null);
-	const downloadQrLink = ref("downloadQRLink");
 
 	const readyForDownload = useState("readyForDownload", () => false);
+	const waiting = useState("waiting", () => false);
+
+	async function genQR() {
+		if (!newShortURL.value && !waiting.value && !readyForDownload.value) {
+			await createQRCodeAndLink(
+				createQRCodePlaceholderElement.value as Element,
+				props.host,
+				props.corsHeaders
+			);
+		}
+	}
 
 	onMounted(() => {
 		createQRCodePlaceholderElement.value = document.getElementById(
@@ -120,13 +115,27 @@
 		);
 	});
 
+	const svgURL = useState("svgURL", () => "");
+	const pngURL = useState("pngURL", () => "");
+
 	const resetShortInputs = () => {
 		newShortURL.value = "";
 		inputTextLongURL.value = "";
 		inputTextCustomURL.value = "";
+		readyForDownload.value = false;
 
 		const imgElement = document.getElementById("qr-code-img");
 		imgElement?.remove();
+
+		if (svgURL.value.length > 0) {
+			URL.revokeObjectURL(svgURL.value);
+		}
+
+		if (pngURL.value.length > 0) {
+			URL.revokeObjectURL(pngURL.value);
+		}
+
+		console.log("resetSHortInputs");
 	};
 </script>
 
@@ -168,11 +177,11 @@
 		border-radius: 0 0 5px 5px;
 	}
 
-		@media (max-width: 470px){
-		#create-qr-code-container{
+	@media (max-width: 470px) {
+		#create-qr-code-container {
 			padding-right: 24px;
 			padding-left: 24px;
-		}		
+		}
 	}
 
 	#input-custom-url-label-group {
@@ -221,7 +230,8 @@
 		gap: 16px;
 	}
 
-	#downloadQRLink {
+	#downloadQRLinkPNG,
+	#downloadQRLinkSVG {
 		margin-top: 8px;
 		text-decoration: none;
 		display: block;
@@ -234,7 +244,7 @@
 		border-radius: 5px;
 	}
 
-	#downloadQRLink:hover {
+	#downloadQRLinkPNG:hover, #downloadQRLinkSVG:hover {
 		color: var(--bg-color-muted);
 	}
 
@@ -244,9 +254,12 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
+		height: 150px;
+		justify-content: center;
+		align-items: center;
 	}
 
-		@media (max-width: 470px) {
+	@media (max-width: 470px) {
 		.domain-thing {
 			display: none;
 		}

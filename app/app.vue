@@ -56,14 +56,14 @@
 		localStorage.setItem("data-mode", "light");
 		document.documentElement.setAttribute("data-theme", "light");
 
-				const firstButton = document.querySelector(
+		const firstButton = document.querySelector(
 			"#switch-between-light-dark-mode button:first-child"
 		) as HTMLElement;
-		firstButton.style.backgroundColor = "var(--bg-color-2)"
+		firstButton.style.backgroundColor = "var(--bg-color-2)";
 		const secondButton = document.querySelector(
 			"#switch-between-light-dark-mode button:nth-child(2)"
 		) as HTMLElement;
-		secondButton.style.backgroundColor = "var(--bg-color-1-5)"
+		secondButton.style.backgroundColor = "var(--bg-color-1-5)";
 	}
 
 	function setDarkMode() {
@@ -73,22 +73,22 @@
 		const firstButton = document.querySelector(
 			"#switch-between-light-dark-mode button:first-child"
 		) as HTMLElement;
-		firstButton.style.backgroundColor = "var(--bg-color-1-5)"
+		firstButton.style.backgroundColor = "var(--bg-color-1-5)";
 		const secondButton = document.querySelector(
 			"#switch-between-light-dark-mode button:nth-child(2)"
 		) as HTMLElement;
-		secondButton.style.backgroundColor = "var(--bg-color-2)"
+		secondButton.style.backgroundColor = "var(--bg-color-2)";
 	}
 
 	onMounted(() => {
 		const dataMode = localStorage.getItem("data-mode") || "light-mode";
 
 		if (dataMode == "light") {
-			setLightMode()
+			setLightMode();
 		}
 
 		if (dataMode == "dark") {
-			setDarkMode()
+			setDarkMode();
 		}
 	});
 
@@ -111,11 +111,22 @@
 	const newShortURL = useState("newShortURL", () => "");
 	const readyForDownload = useState("readyForDownload", () => false);
 
+	const svgURL = useState("svgURL", () => "");
+	const pngURL = useState("pngURL", () => "");
+
 	const resetShortInputs = () => {
 		newShortURL.value = "";
 		inputTextLongURL.value = "";
 		inputTextCustomURL.value = "";
 		readyForDownload.value = false;
+
+		if (svgURL.value.length >  0) {
+			URL.revokeObjectURL(svgURL.value);
+		}
+
+		if (pngURL.value.length > 0) {
+			URL.revokeObjectURL(pngURL.value)
+		}
 	};
 
 	function shortenURLTopClicked() {
@@ -138,6 +149,8 @@
 	}
 
 	function createQRCodeTopClicked() {
+		resetShortInputs()
+
 		if (showShortenURL.value) {
 			const createQRCodeElement =
 				document.getElementById("create-qr-code-top");
@@ -153,6 +166,12 @@
 			showShortenURL.value = !showShortenURL.value;
 		}
 	}
+
+	onUnmounted(() => {
+		if (svgURL.value.length >  0) {
+			URL.revokeObjectURL(svgURL.value);
+		}
+	});
 </script>
 
 <style scoped>
