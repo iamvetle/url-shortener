@@ -64,7 +64,7 @@
 
 			<div v-show="readyForDownload" id="download-group">
 				<h2>Download your QR code</h2>
-				<a id="downloadQRLink">Download GIF here</a>
+				<a id="downloadQRLink">Download PNG here</a>
 			</div>
 		</div>
 
