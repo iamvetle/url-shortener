@@ -149,7 +149,7 @@
 	}
 
 	function createQRCodeTopClicked() {
-		resetShortInputs()
+		resetShortInputs();
 
 		if (showShortenURL.value) {
 			const createQRCodeElement =
@@ -177,7 +177,7 @@
 <style scoped>
 	#page-wrapper {
 		background-color: var(--bg-color);
-		min-height: 100vh;
+		min-height: 100dvh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
