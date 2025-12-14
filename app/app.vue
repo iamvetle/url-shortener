@@ -120,12 +120,12 @@
 		inputTextCustomURL.value = "";
 		readyForDownload.value = false;
 
-		if (svgURL.value.length >  0) {
+		if (svgURL.value.length > 0) {
 			URL.revokeObjectURL(svgURL.value);
 		}
 
 		if (pngURL.value.length > 0) {
-			URL.revokeObjectURL(pngURL.value)
+			URL.revokeObjectURL(pngURL.value);
 		}
 	};
 
@@ -168,7 +168,7 @@
 	}
 
 	onUnmounted(() => {
-		if (svgURL.value.length >  0) {
+		if (svgURL.value.length > 0) {
 			URL.revokeObjectURL(svgURL.value);
 		}
 	});
@@ -178,10 +178,6 @@
 	#page-wrapper {
 		background-color: var(--bg-color);
 		min-height: 100dvh;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
 		width: 100%;
 		padding-left: 8px;
 		padding-right: 8px;
@@ -192,8 +188,15 @@
 	}
 
 	h1 {
+		padding-top: 120px;
 		font-size: 36px;
 		text-align: center;
+	}
+
+	@media (max-width: 450px) {
+		h1 {
+			padding-top: 96px;
+		}
 	}
 
 	@media (max-width: 400px) {
