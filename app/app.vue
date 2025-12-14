@@ -195,7 +195,7 @@
 
 	@media (max-width: 450px) {
 		h1 {
-			padding-top: 96px;
+			padding-top: 112px;
 		}
 	}
 
